@@ -1,0 +1,62 @@
+## EXAMPLE CODE
+
+version: "3.9"
+
+networks:
+  front-connection:
+    driver: bridge
+  db-connection:
+    driver: bridge
+
+services:
+  nginx:
+    container_name: nginx
+    image: nginx
+    restart: always
+    #외부와 소통하는 경우에는 ports로 포트 설정.
+    ports: 
+      - "80:80/tcp"
+      - "443:443"
+    volumes:
+    #docker-compose.yml과 같은 레벨에 둔 nginx.conf를 mount.
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    networks:
+      - front-connection
+    environment:
+      - TZ=Asia/Seoul
+    depends_on:
+      - api
+      - db
+  api:
+    image: dockerhub의 image명
+    container_name: api
+    restart: always
+    expose:
+    # 외부로 노출되지 않고 같은 네트워크끼리 통신하는 경우에는 expose.
+      - "8080"
+    networks:
+      - db-connection
+      - front-connection
+    depends_on:
+      - db
+    environment:
+      - SPRING_PROFILES_ACTIVE=application-${profile}.properties로 배포할시 profile.
+      - DB_HOST=도커에 올라가는 컨테이너명. (여기서는 mariadb)
+      - DB_USERNAME=application.properties에 들어갈 DB 유저네임
+      - DB_PASSWORD=application.properties에 들어갈 DB 비밀번호
+  db:
+    container_name: mariadb
+    image: mariadb
+    restart: always
+    environment:
+      - MARIADB_USER=DB 유저네임
+      - MARIADB_PASSWORD=DB 비밀번호
+      - MARIADB_ROOT_PASSWORD=DB ROOT 비밀번호
+      - MARIADB_DATABASE=스키마 이름
+    expose:
+      - "3306"
+    networks:
+      - db-connection
+    volumes:
+    # 미리 생성한 volume
+      - mariadb
