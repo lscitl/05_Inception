@@ -1,11 +1,12 @@
 # syntax=docker/dockerfile:1
+
 FROM alpine:3.17
 
 ARG PHP_VER=8.1.14-r0
 
 RUN apk add --update --no-cache \
-    php81-common=${PHP_VER} \
-    php81-cgi=${PHP_VER} \
+    php81-fpm=${PHP_VER} \
+    # php81-cgi=${PHP_VER} \
     # php81-session={PHP_VER} \
     # php81-iconv={PHP_VER} \
     # php81-json={PHP_VER} \
@@ -26,14 +27,12 @@ RUN apk add --update --no-cache \
     # php81-ctype={PHP_VER} \
     # php81-dom={PHP_VER} \
     # php81-simplexml={PHP_VER} \
-    # wget \
     fcgi=2.4.2-r2 \
     tar
 
-ADD http://wordpress.org/latest.tar.gz ~/
+ADD http://wordpress.org/latest.tar.gz .
 
-RUN tar -xzvf ~/latest.tar.gz && \
-    rm ~/latest.tar.gz && \
-    ln -s ~/wordpress/ /var/www/localhost/htdocs/wordpress
+RUN tar -xzvf latest.tar.gz -C /var/ && \
+    rm latest.tar.gz 
 
 # CMD ["wget", "http://wordpress.org/latest.tar.gz"]
