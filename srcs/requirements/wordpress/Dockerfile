@@ -33,6 +33,8 @@ RUN apk add --update --no-cache \
 ADD http://wordpress.org/latest.tar.gz .
 
 RUN tar -xzvf latest.tar.gz -C /var/ && \
-    rm latest.tar.gz 
+    rm latest.tar.gz
+
+
 
 # CMD ["wget", "http://wordpress.org/latest.tar.gz"]

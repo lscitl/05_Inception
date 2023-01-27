@@ -3,10 +3,17 @@
 version: "3.9"
 
 networks:
-#   front-connection:
-#     driver: bridge
+  front-connection:
+    driver: bridge
   db-connection:
     driver: bridge
+
+volumes:
+  wordpressdb:
+    driver: local
+  wp:
+    driver: local
+
 
 services:
   # nginx:
@@ -27,35 +34,53 @@ services:
 
   # wordpress:
   #   container_name: wordpress
-  #   image: alpine
+  
+  #   build:
+  #     context: ./requirements/wordpress
+
   #   restart: always
+
   #   ports:
   #       - "${PORT_WORDPRESS}:${PORT_WORDPRESS}"
   #       - "${PORT_MARIADB}:${PORT_MARIADB}"
+    
   #   volumes:
   #       - ./wordpress/html:/var/www/wordpress
+    
   #   networks:
   #     - front-connection
   #     - db-connection
+    
   #   environment:
   #       - WORDPRESS_DB_NAME=${WORDPRESS_DB_NAME}
   #       - WORDPRESS_TABLE_PREFIX=${WORDPRESS_TABLE_PREFIX}
   #       - WORDPRESS_DB_HOST=${WORDPRESS_DB_HOST}
   #       - WORDPRESS_DB_PASSWORD=${WORDPRESS_DB_PASSWORD}
+    
   #   depends_on:
   #     - mariadb
 
+
   mariadb:
     container_name: mariadb
-    image: alpine
+
+    build:
+      context: ./requirements/mariadb
+
     restart: always
+
     ports:
         - "${PORT_WORDPRESS}:${PORT_WORDPRESS}"
         - "${PORT_MARIADB}:${PORT_MARIADB}"
-    # volumes:
-    #   - ./mariadb/wpdb:/wpdb
+
+    volumes:
+        - type: volume
+          source: wordpressdb
+          target: /var/lib/mysql
+
     networks:
       - db-connection
+
     environment:
       - MARIADB_USER=${MARIADB_USER}
       - MARIADB_PASSWORD=${MARIADB_PASSWORD}
