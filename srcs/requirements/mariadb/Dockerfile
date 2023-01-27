@@ -6,19 +6,17 @@ ARG MARIADB_VER=10.6.11-r0
 
 RUN apk add --update --no-cache \
     coreutils \
-    shadow \
     openrc \
     mariadb=${MARIADB_VER} \
-    mariadb-server-utils \
-    pwgen; \
+    mariadb-server-utils; \
     mkdir -p /run/openrc \
     touch /run/openrc/softlevel;
+    # shadow \
+    # pwgen; \
 
 COPY ./tools/setup.sh /scripts/setup.sh
 
-RUN mkdir /docker-entrypoint-initdb.d && \
-    mkdir /scripts/pre-exec.d && \
-    mkdir /scripts/pre-init.d && \
+RUN chown -R mysql:mysql /var/lib/mysql; \
     chmod -R 755 /scripts
 
 EXPOSE 3306
