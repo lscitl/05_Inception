@@ -10,4 +10,4 @@ COPY ./conf/default.conf /etc/nginx/default.conf
 
 EXPOSE 80
 
-# CMD [ "nginx", "-g", "daemon on;" ]
+CMD [ "nginx", "-g", "daemon on;" ]

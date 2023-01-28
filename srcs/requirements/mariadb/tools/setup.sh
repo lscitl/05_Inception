@@ -1,36 +1,21 @@
 #!/bin/sh
 
+# tmp env
 export MARIADB_NAME=wpdb
 export MARIADB_USER=wordpress
 export MARIADB_PASSWORD=111111
 
-rc default
-
-/etc/init.d/mariadb setup
-rm /var/lib/mysql/ib_logfile*
-
-rc-service mariadb start
-rc-service mariadb stop
-
-cat > /etc/my.cnf << EOF
-[mysqld]
-user = root
-datadir = /var/lib/mysql
-port = 3306
-bind-address = 0.0.0.0
-EOF
-
+# for mysql_install_db
 mkdir /auth_pam_tool_dir
 touch /auth_pam_tool_dir/auth_pam_tool
 
-mysql_install_db --user=root --basedir=/usr --datadir=/var/lib/mysql --skip-test-db
+# init mariadb
+mysql_install_db --user=mysql --basedir=/usr --datadir=/var/lib/mysql --skip-test-db
 
-/usr/bin/mysqld --bootstrap << EOF
+# create user and set pw
+/usr/bin/mysqld -user=mysql --bootstrap << EOF
 FLUSH PRIVILEGES;
-DROP DATABASE IF EXISTS test ;
 CREATE DATABASE IF NOT EXISTS $MARIADB_NAME;
-DELETE FROM mysql.user WHERE User='';
-DELETE FROM mysql.user WHERE User='mysql';
 CREATE USER IF NOT EXISTS '$MARIADB_USER'@'%' IDENTIFIED BY '$MARIADB_PASSWORD';
 GRANT ALL PRIVILEGES ON $MARIADB_NAME.* TO '$MARIADB_USER'@'%';
 ALTER USER 'root'@'localhost' IDENTIFIED BY '$DB_ROOT_PASSWORD';
@@ -39,6 +24,12 @@ EOF
 
 exec /usr/bin/mysqld
 
+
+# exec /usr/bin/mysqld_safe --datadir='/var/lib/mysql'
+
+# DROP DATABASE IF EXISTS test ;
+# DELETE FROM mysql.user WHERE User='';
+# DELETE FROM mysql.user WHERE User='mysql';
 # DELETE FROM mysql.user WHERE User='mariadb.sys';
 # USE mysql;
 # FLUSH PRIVILEGES;

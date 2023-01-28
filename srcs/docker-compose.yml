@@ -16,49 +16,58 @@ volumes:
 
 
 services:
-  # nginx:
-  #   container_name: nginx
-  #   image: alpine
-  #   restart: always
-  #   ports: 
-  #     - "${PORT_NGINX}:${PORT_NGINX}"
-  #   volumes:
-  #     - ./wordpress/html:/var/www/wordpress
-  #   networks:
-  #     - front-connection
-  #   environment:
-  #     - TZ=Asia/Seoul
-  #   depends_on:
-  #     - wordpress
-  #     - mariadb
+  nginx:
+    container_name: nginx
 
-  # wordpress:
-  #   container_name: wordpress
+    build:
+      context: ./requirements/nginx
+
+    restart: always
+
+    ports: 
+      - "${PORT_NGINX}:${PORT_NGINX}"
+      - "${PORT_WORDPRESS}:${PORT_WORDPRESS}"
+
+    volumes:
+      - ./wordpress/html:/var/www/wordpress
+
+    networks:
+      - front-connection
+
+    environment:
+      - TZ=Asia/Seoul
+
+    depends_on:
+      - wordpress
+      - mariadb
+
+  wordpress:
+    container_name: wordpress
   
-  #   build:
-  #     context: ./requirements/wordpress
+    build:
+      context: ./requirements/wordpress
 
-  #   restart: always
+    restart: always
 
-  #   ports:
-  #       - "${PORT_WORDPRESS}:${PORT_WORDPRESS}"
-  #       - "${PORT_MARIADB}:${PORT_MARIADB}"
+    ports:
+      - "${PORT_WORDPRESS}:${PORT_WORDPRESS}"
+      - "${PORT_MARIADB}:${PORT_MARIADB}"
+  
+    volumes:
+      - ./wordpress/html:/var/www/wordpress
     
-  #   volumes:
-  #       - ./wordpress/html:/var/www/wordpress
+    networks:
+      - front-connection
+      - db-connection
     
-  #   networks:
-  #     - front-connection
-  #     - db-connection
+    environment:
+      - WORDPRESS_DB_NAME=${WORDPRESS_DB_NAME}
+      - WORDPRESS_TABLE_PREFIX=${WORDPRESS_TABLE_PREFIX}
+      - WORDPRESS_DB_HOST=${WORDPRESS_DB_HOST}
+      - WORDPRESS_DB_PASSWORD=${WORDPRESS_DB_PASSWORD}
     
-  #   environment:
-  #       - WORDPRESS_DB_NAME=${WORDPRESS_DB_NAME}
-  #       - WORDPRESS_TABLE_PREFIX=${WORDPRESS_TABLE_PREFIX}
-  #       - WORDPRESS_DB_HOST=${WORDPRESS_DB_HOST}
-  #       - WORDPRESS_DB_PASSWORD=${WORDPRESS_DB_PASSWORD}
-    
-  #   depends_on:
-  #     - mariadb
+    depends_on:
+      - mariadb
 
 
   mariadb:
@@ -70,13 +79,12 @@ services:
     restart: always
 
     ports:
-        - "${PORT_WORDPRESS}:${PORT_WORDPRESS}"
-        - "${PORT_MARIADB}:${PORT_MARIADB}"
+      - "${PORT_MARIADB}:${PORT_MARIADB}"
 
     volumes:
-        - type: volume
-          source: wordpressdb
-          target: /var/lib/mysql
+      - type: volume
+        source: wordpressdb
+        target: /var/lib/mysql
 
     networks:
       - db-connection

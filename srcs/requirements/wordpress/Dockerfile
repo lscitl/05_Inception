@@ -33,8 +33,15 @@ RUN apk add --update --no-cache \
 ADD http://wordpress.org/latest.tar.gz .
 
 RUN tar -xzvf latest.tar.gz -C /var/ && \
-    rm latest.tar.gz
+    rm latest.tar.gz && \
+    mkdir /var/wordpress/wp-content/uploads && \
+    chmod 755 /var/wordpress/wp-content/uploads
 
+COPY conf/wp-config.php /var/wordpress/wp-config.php
 
+COPY tools/wp.sh /wp.sh
 
+RUN chmod +x /wp.sh
+
+ENTRYPOINT [ "wp.sh" ]
 # CMD ["wget", "http://wordpress.org/latest.tar.gz"]
