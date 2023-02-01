@@ -8,7 +8,7 @@ RUN apk add --update --no-cache \
 	nginx=${NGINX_VER} \
 	openssl
 
-RUN mkdir -p /var/www/html; \
+RUN mkdir -p /var/www; \
 	mkdir -p /etc/nginx/ssl; \
 	chmod 700 /etc/nginx/ssl
 
@@ -19,8 +19,8 @@ RUN openssl req -x509 \
 				-keyout /etc/nginx/ssl/localhost.seseo.key \
 				-out /etc/nginx/ssl/localhost.seseo.crt
 
-COPY ./conf/default.conf /etc/nginx/default.conf
+COPY ./conf/default.conf /etc/nginx/http.d/default.conf
 
-# EXPOSE 443
+EXPOSE 443
 
 CMD [ "nginx", "-g", "daemon off;" ]
