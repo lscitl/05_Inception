@@ -8,19 +8,25 @@ RUN apk add --update --no-cache \
 	nginx=${NGINX_VER} \
 	openssl
 
-RUN mkdir -p /var/www/html; \
+RUN mkdir -p /var/www; \
 	mkdir -p /etc/nginx/ssl; \
 	chmod 700 /etc/nginx/ssl
 
-RUN openssl req -x509 \
-				-newkey rsa:2048 \
-				-nodes \
-				-subj "/C=KR/ST=Seoul/L=Seoul/O=42Seoul/OU=seseo" \
-				-keyout /etc/nginx/ssl/localhost.seseo.key \
-				-out /etc/nginx/ssl/localhost.seseo.crt
+RUN openssl genrsa -out /etc/nginx/ssl/seseo.42.kr.key 2048 && \
+	openssl req \
+	-new \
+	-key /etc/nginx/ssl/seseo.42.kr.key \ 
+	-out /etc/nginx/ssl/seseo.42.kr.csr \
+	-subj "/C=KR/ST=Seoul/L=Seoul/O=42Seoul/OU=seseo/CN=seseo.42.kr/emailAddress=seseo@student.42seoul.kr" && \
+	openssl x509 \
+	-req \
+	-days 365 \
+	-in /etc/nginx/ssl/seseo.42.kr.csr \
+	-signkey /etc/nginx/ssl/seseo.42.kr.key \
+	-out /etc/nginx/ssl/seseo.42.kr.crt
 
-COPY ./conf/default.conf /etc/nginx/default.conf
+COPY ./conf/default.conf /etc/nginx/http.d/default.conf
 
-# EXPOSE 443
+EXPOSE 443
 
 CMD [ "nginx", "-g", "daemon off;" ]
