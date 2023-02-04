@@ -11,7 +11,10 @@ RUN apk add --update --no-cache \
 COPY tools/setup.sh /scripts/setup.sh
 COPY conf/my.cnf /etc/my.cnf
 
-RUN chown -R mysql:mysql /var/lib/mysql; \
+# make socket and volume mount directory.
+RUN mkdir -p /run/mysqld && \
+    mkdir -p /var/www/html/wpdb && \
+    chown -R mysql:mysql /var/www/html/wpdb && \
     chmod -R 755 /scripts
 
 EXPOSE 3306

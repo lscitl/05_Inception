@@ -3,10 +3,12 @@
 version: "3.9"
 
 networks:
-  front-connection:
+  local-network:
     driver: bridge
-  db-connection:
-    driver: bridge
+  # front-connection:
+  #   driver: bridge
+  # db-connection:
+  #   driver: bridge
 
 volumes:
   v_wordpressdb:
@@ -16,91 +18,55 @@ volumes:
 
 
 services:
-  # mariadb:
-  #   container_name: mariadb
+  mariadb:
+    container_name: mariadb
 
-  #   build:
-  #     context: ./requirements/mariadb
-  #     dockerfile: ./Dockerfile
+    build:
+      context: ./requirements/mariadb
+      dockerfile: ./Dockerfile
 
-  #   restart: always
+    restart: always
 
-  #   # ports:
-  #   #   - "${PORT_MARIADB}:${PORT_MARIADB}"
+    # ports:
+    #   - "${PORT_MARIADB}:${PORT_MARIADB}"
 
-  #   volumes:
-  #     - v_wordpressdb:/var/www/html/wpdb
+    volumes:
+      - v_wordpressdb:/var/www/html/wpdb
 
-  #   networks:
-  #     - db-connection
+    networks:
+      - local-network
+      # - db-connection
 
-  #   environment:
-  #     - MARIADB_USER=${MARIADB_USER}
-  #     - MARIADB_PASSWORD=${MARIADB_PASSWORD}
-  #     - MARIADB_ROOT_PASSWORD=${MARIADB_ROOT_PASSWORD}
-  #     - MARIADB_DATABASE=${MARIADB_DATABASE}
+    env_file:
+      - .env
 
 
-  # wordpress:
-  #   container_name: wordpress
+  wordpress:
+    container_name: wordpress
 
-  #   build:
-  #     context: ./requirements/wordpress
-  #     dockerfile: ./Dockerfile
+    build:
+      context: ./requirements/wordpress
+      dockerfile: ./Dockerfile
 
-  #   restart: always
+    restart: always
 
-  #   # ports:
-  #   #   - "${PORT_WORDPRESS}:${PORT_WORDPRESS}"
-  #   #   - "${PORT_MARIADB}:${PORT_MARIADB}"
+    # ports:
+    #   - "${PORT_WORDPRESS}:${PORT_WORDPRESS}"
+    #   - "${PORT_MARIADB}:${PORT_MARIADB}"
 
-  #   volumes:
-  #     - v_wp:${WORDPRESS_PATH}
+    volumes:
+      - v_wp:${WORDPRESS_PATH}
 
-  #   networks:
-  #     - front-connection
-  #     - db-connection
+    networks:
+      - local-network
+      # - front-connection
+      # - db-connection
 
-  #   environment:
-  #     - WORDPRESS_PATH=${WORDPRESS_PATH}
-  #     - WORDPRESS_URL=${WORDPRESS_URL}
-  #     - WORDPRESS_TITLE=${WORDPRESS_TITLE}
-  #     - WORDPRESS_ADMIN_USER=${WORDPRESS_ADMIN_USER}
-  #     - WORDPRESS_ADMIN_PASSWORD=${WORDPRESS_ADMIN_PASSWORD}
-  #     - WORDPRESS_ADMIN_EMAIL=${WORDPRESS_ADMIN_EMAIL}
-  #     - WORDPRESS_DB_NAME=${WORDPRESS_DB_NAME}
-  #     - WORDPRESS_TABLE_PREFIX=${WORDPRESS_TABLE_PREFIX}
-  #     - WORDPRESS_DB_HOST=${WORDPRESS_DB_HOST}
-  #     - WORDPRESS_DB_PASSWORD=${WORDPRESS_DB_PASSWORD}
+    env_file:
+      - .env
 
-  #   depends_on:
-  #     - mariadb
-
-
-  # nginx:
-  #   container_name: nginx
-
-  #   build:
-  #     context: ./requirements/nginx
-  #     dockerfile: ./Dockerfile
-
-  #   restart: always
-
-  #   ports:
-  #     - "${PORT_NGINX}:${PORT_NGINX}"
-  #     # - "${PORT_WORDPRESS}:${PORT_WORDPRESS}"
-
-  #   volumes:
-  #     - v_wp:/var/www/html
-
-  #   networks:
-  #     - front-connection
-
-  #   environment:
-  #     - TZ=Asia/Seoul
-
-  #   depends_on:
-  #     - wordpress
+    depends_on:
+      - mariadb
 
 
   nginx:
@@ -120,10 +86,11 @@ services:
       - v_wp:/var/www/html
 
     networks:
-      - front-connection
+      - local-network
+      # - front-connection
 
     environment:
       - TZ=Asia/Seoul
 
-    # depends_on:
-    #   - wordpress
+    depends_on:
+      - wordpress

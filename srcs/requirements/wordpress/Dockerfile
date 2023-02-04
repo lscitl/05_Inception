@@ -52,7 +52,14 @@ COPY tools/wp.sh /wp.sh
 
 RUN curl -L "https://github.com/wp-cli/wp-cli/releases/download/v2.7.1/wp-cli-2.7.1.phar" > /usr/bin/wp && \
     chmod +x /usr/bin/wp
+
+RUN adduser -u 82 -D -S -G www-data www-data
+
+RUN chown -R www-data:www-data /var/www
+
 RUN chmod +x /wp.sh
+
+COPY ./conf/www.conf /etc/php81/php-fpm.d/www.conf
 
 # RUN chown -R wordpress:wordpress /var/www/html
 EXPOSE 9000
