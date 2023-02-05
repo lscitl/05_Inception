@@ -3,15 +3,13 @@
 version: "3.9"
 
 networks:
-  local-network:
+  nw-db:
     driver: bridge
-  # front-connection:
-  #   driver: bridge
-  # db-connection:
+  # nw-cgi:
   #   driver: bridge
 
 volumes:
-  v_wordpressdb:
+  v_wpdb:
     driver: local
   v_wp:
     driver: local
@@ -27,15 +25,11 @@ services:
 
     restart: always
 
-    # ports:
-    #   - "${PORT_MARIADB}:${PORT_MARIADB}"
-
     volumes:
-      - v_wordpressdb:/var/www/html/wpdb
+      - v_wpdb:/var/www/html/wpdb
 
     networks:
-      - local-network
-      # - db-connection
+      - nw-db
 
     env_file:
       - .env
@@ -50,17 +44,12 @@ services:
 
     restart: always
 
-    # ports:
-    #   - "${PORT_WORDPRESS}:${PORT_WORDPRESS}"
-    #   - "${PORT_MARIADB}:${PORT_MARIADB}"
-
     volumes:
-      - v_wp:${WORDPRESS_PATH}
+      - v_wp:${WP_PATH}
 
     networks:
-      - local-network
-      # - front-connection
-      # - db-connection
+      - nw-db
+      # - nw-cgi
 
     env_file:
       - .env
@@ -80,14 +69,13 @@ services:
 
     ports:
       - "${PORT_NGINX}:${PORT_NGINX}"
-      # - "${PORT_WORDPRESS}:${PORT_WORDPRESS}"
 
     volumes:
       - v_wp:/var/www/html
 
     networks:
-      - local-network
-      # - front-connection
+      - nw-db
+      # - nw-cgi
 
     environment:
       - TZ=Asia/Seoul
