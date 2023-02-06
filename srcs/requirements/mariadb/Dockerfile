@@ -2,10 +2,8 @@
 
 FROM alpine:3.17
 
-ARG MARIADB_VER=10.6.11-r0
-
 RUN apk add --update --no-cache \
-    mariadb=${MARIADB_VER} \
+    mariadb \
     mariadb-server-utils
 
 COPY tools/setup.sh /scripts/setup.sh
@@ -20,3 +18,5 @@ RUN mkdir -p /run/mysqld && \
 EXPOSE 3306
 
 ENTRYPOINT [ "/scripts/setup.sh" ]
+
+HEALTHCHECK --interval=1s --timeout=1s --retries=3 CMD curl -f http://localhost:3306 || exit 1

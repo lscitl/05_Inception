@@ -55,7 +55,8 @@ services:
       - .env
 
     depends_on:
-      - mariadb
+      mariadb:
+        condition: service_healthy
 
 
   nginx:
@@ -64,6 +65,13 @@ services:
     build:
       context: ./requirements/nginx
       dockerfile: ./Dockerfile
+
+    # healthcheck:
+    #   test: ["executable", "arg"]
+    #   interval: 1m30s
+    #   timeout: 30s
+    #   retries: 5
+    #   start_period: 30s
 
     restart: always
 

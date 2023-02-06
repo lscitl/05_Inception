@@ -2,10 +2,8 @@
 
 FROM alpine:3.17
 
-ARG NGINX_VER=1.22.1-r0
-
 RUN apk add --update --no-cache \
-	nginx=${NGINX_VER} \
+	nginx \
 	openssl
 
 RUN mkdir -p /var/www; \

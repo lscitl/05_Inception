@@ -2,10 +2,8 @@
 
 FROM alpine:3.17
 
-ARG PHP_VER=8.1.14-r0
-ARG WP_VER=6.1.1
-ARG WP_CLI_VER=2.7.1
 ARG WP_PATH=/var/www/html
+ARG PHP_VER=8.1.14-r0
 
 RUN apk add --update --no-cache \
     php81=${PHP_VER} \
@@ -31,18 +29,15 @@ RUN apk add --update --no-cache \
     php81-simplexml=${PHP_VER} \
     fcgi \
     tar \
-    curl
+    curl \
+    mariadb-client && \
+    mkdir -p /var/www/html 
 
-RUN mkdir -p /var/www/html && \
-    curl -L "https://wordpress.org/latest.tar.gz" > /latest.tar.gz && \
-    tar -xzf /latest.tar.gz -C /var/www/html --strip-components=1 && \
-    rm /latest.tar.gz
-
-COPY conf/wp-config.php /var/www/html/wp-config.php
 COPY tools/wp.sh /wp.sh
 
-RUN curl -L "https://github.com/wp-cli/wp-cli/releases/download/v2.7.1/wp-cli-2.7.1.phar" > /usr/bin/wp && \
-    chmod +x /usr/bin/wp
+RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar && \
+    chmod +x wp-cli.phar && \
+    mv wp-cli.phar /usr/bin/wp
 
 RUN adduser -u 82 -D -S -G www-data www-data && \
     chown -R www-data:www-data /var/www && \
@@ -53,3 +48,6 @@ COPY ./conf/www.conf /etc/php81/php-fpm.d/www.conf
 EXPOSE 9000
 
 ENTRYPOINT [ "./wp.sh" ]
+
+# health check default set
+HEALTHCHECK --interval=1s --timeout=1s --retries=3 CMD curl -f http://localhost:9000 || exit 1
