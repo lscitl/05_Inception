@@ -3,7 +3,7 @@
 FROM alpine:3.17
 
 ARG WP_PATH=/var/www/html
-ARG PHP_VER=8.1.14-r0
+ARG PHP_VER=8.1.15-r0
 
 RUN apk add --update --no-cache \
     php81=${PHP_VER} \
@@ -31,7 +31,7 @@ RUN apk add --update --no-cache \
     tar \
     curl \
     mariadb-client && \
-    mkdir -p /var/www/html 
+    mkdir -p /var/www/html
 
 COPY tools/wp.sh /wp.sh
 
