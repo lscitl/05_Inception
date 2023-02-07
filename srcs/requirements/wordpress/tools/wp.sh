@@ -4,7 +4,6 @@
 
 if ! $(wp core is-installed  --allow-root --path="$WP_PATH"); then
 	echo "=> WordPress is not configured yet, configuring WordPress ..."
-
 	echo "=> Installing WordPress"
 
 	wp core download --allow-root \

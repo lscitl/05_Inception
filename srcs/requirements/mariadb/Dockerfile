@@ -4,9 +4,11 @@ FROM alpine:3.17
 
 RUN apk add --update --no-cache \
     mariadb \
-    mariadb-server-utils
+    mariadb-server-utils \
+    mariadb-client
 
 COPY tools/setup.sh /scripts/setup.sh
+COPY tools/health_check.sh /scripts/health_check.sh
 COPY conf/my.cnf /etc/my.cnf
 
 # make socket and volume mount directory.
@@ -19,4 +21,4 @@ EXPOSE 3306
 
 ENTRYPOINT [ "/scripts/setup.sh" ]
 
-HEALTHCHECK --interval=1s --timeout=1s --retries=3 CMD curl -f http://localhost:3306 || exit 1
+HEALTHCHECK --interval=1s --timeout=1s --retries=3 CMD /scripts/health_check.sh

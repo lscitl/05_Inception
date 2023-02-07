@@ -49,5 +49,6 @@ EXPOSE 9000
 
 ENTRYPOINT [ "./wp.sh" ]
 
-# health check default set
-HEALTHCHECK --interval=1s --timeout=1s --retries=3 CMD curl -f http://localhost:9000 || exit 1
+# health check set
+HEALTHCHECK --interval=1s --timeout=1s --retries=3 \
+    CMD wp core is-installed --allow-root --path="$WP_PATH" || exit 1

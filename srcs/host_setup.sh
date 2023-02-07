@@ -8,39 +8,41 @@ then
 	exit 1
 fi
 
-USER=ssduk
+if docker --version; then
+  echo "docker installed"
+else
 
-# apt update
-apt-get update
-apt-get upgrade -y
+  # apt update
+  apt-get update
+  apt-get upgrade -y
 
-# install docker
-apt-get install \
-	ca-certificates \
-    curl \
-    gnupg \
-    lsb-release
-mkdir -p /etc/apt/keyrings
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
-echo \
-  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
-  $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+  # install docker
+  apt-get install ca-certificates curl gnupg lsb-release -y
 
-chmod a+r /etc/apt/keyrings/docker.gpg
-apt-get update
+  mkdir -p /etc/apt/keyrings
+  curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+  echo \
+    "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+    $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
 
-apt-get install docker-ce docker-ce-cli containerd.io docker-compose-plugin
+  chmod a+r /etc/apt/keyrings/docker.gpg
 
-# post-installation steps
-groupadd docker
-usermod -aG docker $USER
+  apt-get update
+  apt-get install docker-ce docker-ce-cli containerd.io docker-compose-plugin -y
 
-chown "$USER":"$USER" /home/"$USER"/.docker -R
-chmod g+rwx "$HOME/.docker" -R
+  # post-installation steps
+  groupadd docker
+  usermod -aG docker $USER
+
+  chown "$USER":"$USER" /home/"$USER"/.docker -R
+  chmod g+rwx "$HOME/.docker" -R
+fi
 
 # host set
-cat << EOF | tee -a /etc/hosts
+if [ cat /etc/hosts | grep $USER.42.kr ]; then
+else
+  cat << EOF | tee -a /etc/hosts
 #Inception host setting
 ::1     $USER.42.kr
 EOF
-
+fi
