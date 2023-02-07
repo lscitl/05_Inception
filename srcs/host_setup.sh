@@ -8,6 +8,8 @@ then
 	exit 1
 fi
 
+USER=seseo
+
 if docker --version; then
   echo "docker installed"
 else
@@ -39,10 +41,13 @@ else
 fi
 
 # host set
-if [ cat /etc/hosts | grep $USER.42.kr ]; then
+if [ -n "$(cat /etc/hosts | grep $USER.42.kr)" ]; then
+  echo "already added"
 else
   cat << EOF | tee -a /etc/hosts
 #Inception host setting
 ::1     $USER.42.kr
 EOF
 fi
+
+sudo apt install make -y
