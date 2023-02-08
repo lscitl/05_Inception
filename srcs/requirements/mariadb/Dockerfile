@@ -21,4 +21,5 @@ EXPOSE 3306
 
 ENTRYPOINT [ "/scripts/setup.sh" ]
 
-HEALTHCHECK --interval=1s --timeout=1s --retries=3 CMD /scripts/health_check.sh
+# health check
+HEALTHCHECK --interval=1s --timeout=1s --retries=30 CMD /scripts/health_check.sh
