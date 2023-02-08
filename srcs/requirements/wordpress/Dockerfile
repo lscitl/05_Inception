@@ -3,30 +3,30 @@
 FROM alpine:3.17
 
 ARG WP_PATH=/var/www/html
-ARG PHP_VER=8.1.15-r0
 
 RUN apk add --update --no-cache \
-    php81=${PHP_VER} \
-    php81-fpm=${PHP_VER} \
-    php81-phar=${PHP_VER} \
-    php81-cgi=${PHP_VER} \
-    php81-session=${PHP_VER} \
-    php81-iconv=${PHP_VER} \
-    php81-gd=${PHP_VER} \
-    php81-curl=${PHP_VER} \
-    php81-xml=${PHP_VER} \
-    php81-mysqli=${PHP_VER} \
-    php81-imap=${PHP_VER} \
-    php81-cgi=${PHP_VER} \
-    php81-pdo=${PHP_VER} \
-    php81-pdo_mysql=${PHP_VER} \
-    php81-soap=${PHP_VER} \
-    php81-posix=${PHP_VER} \
-    php81-gettext=${PHP_VER} \
-    php81-ldap=${PHP_VER} \
-    php81-ctype=${PHP_VER} \
-    php81-dom=${PHP_VER} \
-    php81-simplexml=${PHP_VER} \
+    php81 \
+    php81-fpm \
+    php81-phar \
+    php81-session \
+    php81-iconv \
+    php81-gd \
+    php81-curl \
+    php81-xml \
+    php81-mysqli \
+    php81-imap \
+    php81-cgi \
+    php81-pdo \
+    php81-pdo_mysql \
+    php81-soap \
+    php81-posix \
+    php81-gettext \
+    php81-ldap \
+    php81-ctype \
+    php81-dom \
+    php81-simplexml \
+    php81-redis \
+    php81-ftp \
     fcgi \
     tar \
     curl \
@@ -37,7 +37,8 @@ COPY tools/wp.sh /wp.sh
 
 RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar && \
     chmod +x wp-cli.phar && \
-    mv wp-cli.phar /usr/bin/wp
+    mv wp-cli.phar /usr/bin/wp && \
+    wp core download --allow-root --path=$WP_PATH
 
 RUN adduser -u 82 -D -S -G www-data www-data && \
     chown -R www-data:www-data /var/www && \
@@ -50,5 +51,5 @@ EXPOSE 9000
 ENTRYPOINT [ "./wp.sh" ]
 
 # health check set
-HEALTHCHECK --interval=1s --timeout=1s --retries=3 \
+HEALTHCHECK --interval=1s --timeout=1s --retries=30 \
     CMD wp core is-installed --allow-root --path="$WP_PATH" || exit 1
