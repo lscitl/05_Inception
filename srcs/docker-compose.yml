@@ -2,19 +2,6 @@
 
 version: "3.9"
 
-networks:
-  nw-db:
-    driver: bridge
-  nw-cgi:
-    driver: bridge
-
-volumes:
-  v_wpdb:
-    driver: local
-  v_wp:
-    driver: local
-
-
 services:
   mariadb:
     container_name: mariadb
@@ -75,7 +62,6 @@ services:
       - v_wp:/var/www/html
 
     networks:
-      - nw-db
       - nw-cgi
 
     environment:
@@ -84,3 +70,44 @@ services:
     depends_on:
       wordpress:
         condition: service_healthy
+
+  # redis:
+  #   container_name: redis
+
+  #   build:
+  #     context: ./requirements/bonus/redis
+  #     dockerfile: ./Dockerfile
+
+  #   restart: always
+
+  #   networks:
+  #     - nw-cgi
+
+  #   environment:
+  #     - TZ=Asia/Seoul
+
+  #   depends_on:
+  #     wordpress:
+  #       condition: service_healthy
+
+
+networks:
+  nw-db:
+    driver: bridge
+  nw-cgi:
+    driver: bridge
+
+volumes:
+  v_wpdb:
+    driver: local
+    # driver_opts:
+    #   type: none
+    #   o: bind
+    #   device: /home/seseo/data/wpdb
+
+  v_wp:
+    driver: local
+    # driver_opts:
+    #   type: none
+    #   o: bind
+    #   device: /home/seseo/data/wp
