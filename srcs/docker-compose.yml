@@ -37,6 +37,7 @@ services:
     networks:
       - nw-db
       - nw-cgi
+      - nw-ftp
 
     env_file:
       - .env
@@ -90,11 +91,42 @@ services:
   #     wordpress:
   #       condition: service_healthy
 
+  vsftpd:
+    container_name: vsftpd
+
+    build:
+      context: ./requirements/bonus/vsftpd
+      dockerfile: ./Dockerfile
+
+    restart: always
+
+    ports:
+      - "20:20"
+      - "21:21"
+      - "2100-2101:2100-2101"
+
+    volumes:
+      - v_wp:/var/ftp
+
+    networks:
+      - nw-ftp
+
+    env_file:
+      - .env
+
+    # environment:
+    #   - TZ=Asia/Seoul
+    # depends_on:
+    #   wordpress:
+    #     condition: service_healthy
+
 
 networks:
   nw-db:
     driver: bridge
   nw-cgi:
+    driver: bridge
+  nw-ftp:
     driver: bridge
 
 volumes:
