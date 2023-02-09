@@ -1,6 +1,6 @@
 #!/bin/sh
 
-if ! $(wp core is-installed  --allow-root --path=$WP_PATH); then
+if ! $(wp core is-installed  --allow-root --path=$WP_PATH &> /dev/null); then
 	echo "=> WordPress is not configured yet, configuring WordPress and create admin and user."
 
 	# create config file.
@@ -41,4 +41,3 @@ else
 fi
 
 exec php-fpm81 -F
-
