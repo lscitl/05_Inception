@@ -51,5 +51,5 @@ EXPOSE 9000
 ENTRYPOINT [ "./wp.sh" ]
 
 # health check set
-HEALTHCHECK --interval=1s --timeout=1s --retries=30 \
+HEALTHCHECK --interval=1s --timeout=1s --retries=30 --start-period=3s \
     CMD wp core is-installed --allow-root --path="$WP_PATH" || exit 1

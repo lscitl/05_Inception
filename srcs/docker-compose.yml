@@ -103,7 +103,7 @@ services:
     ports:
       - "20:20"
       - "21:21"
-      - "2100-2101:2100-2101"
+      - "2100-2110:2100-2110"
 
     volumes:
       - v_wp:/var/ftp
@@ -113,12 +113,6 @@ services:
 
     env_file:
       - .env
-
-    # environment:
-    #   - TZ=Asia/Seoul
-    # depends_on:
-    #   wordpress:
-    #     condition: service_healthy
 
 
 networks:
@@ -132,14 +126,14 @@ networks:
 volumes:
   v_wpdb:
     driver: local
-    # driver_opts:
-    #   type: none
-    #   o: bind
-    #   device: /home/seseo/data/wpdb
+    driver_opts:
+      type: none
+      o: bind
+      device: ${DATA_PATH}/wpdb
 
   v_wp:
     driver: local
-    # driver_opts:
-    #   type: none
-    #   o: bind
-    #   device: /home/seseo/data/wp
+    driver_opts:
+      type: none
+      o: bind
+      device: ${DATA_PATH}/wp

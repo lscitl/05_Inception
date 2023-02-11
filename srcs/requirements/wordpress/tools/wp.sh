@@ -1,6 +1,7 @@
 #!/bin/sh
 
-if ! $(wp core is-installed --allow-root --path=$WP_PATH &> /dev/null); then
+wp core is-installed --allow-root --path=$WP_PATH &> /dev/null
+if [ $? -ne 0 ] ; then
 	echo "=> WordPress is not configured yet, configuring WordPress and create admin and user."
 
 	# create config file.
@@ -42,22 +43,17 @@ EOF
 					--path=$WP_PATH \
 					--role=author \
 					--user_pass=$WP_USER_PW
-
-else
-	echo "=> WordPress is alread configured.";
 fi
 
 # redis-cache plugin install
-if ! $(wp plugin is-installed redis-cache --allow-root --path=$WP_PATH &> /dev/null); then
-	# Update plugin
-	wp plugin update redis-cache --allow-root --path=$WP_PATH
-else
-	# Install plugin
+wp plugin is-installed redis-cache --allow-root --path=$WP_PATH &> /dev/null
+if [ $? -ne 0 ]; then
 	wp plugin install redis-cache --allow-root --path=$WP_PATH
-	
 fi
 
-if $(wp plugin is-active redis-cache --allow-root --path=$WP_PATH &> /dev/null); then
+# redis-cache plugin activate
+wp plugin is-active redis-cache --allow-root --path=$WP_PATH &> /dev/null
+if [ $? -ne 0 ]; then
 	wp plugin activate redis-cache --allow-root --path=$WP_PATH
 	wp plugin auto-updates enable redis-cache --allow-root --path=$WP_PATH
 	wp redis enable --allow-root --path=$WP_PATH

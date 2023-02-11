@@ -15,3 +15,5 @@ openssl x509 \
         -in ${FTP_SSL_PATH}/vsftpd.csr \
         -signkey ${FTP_SSL_PATH}/vsftpd.key \
         -out ${FTP_SSL_PATH}/vsftpd.crt
+
+# openssl req -newkey rsa:2048 -nodes -keyout ${FTP_SSL_PATH}/vsftpd.pem -x509 -days 365 -out ${FTP_SSL_PATH}/vsftpd.pem -subj /C=KR/ST=Seoul/L=Seoul/O=42Seoul/OU=seseo/CN=${FTP_DOMAIN_NAME}/emailAddress=seseo@student.42seoul.kr
