@@ -3,34 +3,40 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: ssduk <ssduk@student.42.fr>                +#+  +:+       +#+         #
+#    By: seseo <seseo@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/01/25 16:48:49 by seseo             #+#    #+#              #
-#    Updated: 2023/02/11 18:42:30 by ssduk            ###   ########.fr        #
+#    Updated: 2023/02/12 04:34:21 by seseo            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 # for docker compose
-DC				:= docker compose
-DC_SRC			:= ./srcs/docker-compose.yml
+DC					:= docker compose
+DC_SRC				:= ./srcs/docker-compose.yml
 
-DI				:= docker image
-DIL				:= $(DI)s
+DI					:= docker image
+DIL					:= $(DI)s
 
-DATA_PATH 		:= $(HOME)/data
+DV					:= docker volume
+DVL					:= $(DV) ls
 
-# containers
+DN					:= docker network
+DNL					:= $(DN) ls
+
+
+DATA_PATH 			:= $(HOME)/data
+
+# mandatory containers
 CONTAINER_MARIADB	:= mariadb
 CONTAINER_WORDPRESS	:= wordpress
 CONTAINER_NGINX		:= nginx
 
-# bonus
+# bonus containers
 CONTAINER_VSFTPD	:= vsftpd
 CONTAINER_REDIS		:= redis
-CONTAINER_ADMINOR	:= adminor
 CONTAINER_GIT		:= git
-CONTAINER_STATIC	:= static
 
+TARGET				:= inception
 
 .PHONY:	all
 all:	up
@@ -38,19 +44,27 @@ all:	up
 .PHONY: build
 build:
 		mkdir -p $(DATA_PATH)/wp $(DATA_PATH)/wpdb
-		$(DC) -f $(DC_SRC) build
+		$(DC) -f $(DC_SRC) -p $(TARGET) build
 
 .PHONY:	up
 up:		build
-		$(DC) -f $(DC_SRC) up
+		$(DC) -f $(DC_SRC) -p $(TARGET) up
 
 .PHONY:	down
 down:
-		$(DC) -f $(DC_SRC) down
+		$(DC) -f $(DC_SRC) -p $(TARGET) down
 
-.PHONY:	show_img
-show_img:
+.PHONY:	img_ls
+img_ls:
 		$(DIL)
+
+.PHONY:	vol_ls
+vol_ls:
+		$(DVL)
+
+.PHONY:	net_ls
+net_ls:
+		$(DNL)
 
 .PHONY:	re
 re:		clean
@@ -58,8 +72,8 @@ re:		clean
 
 .PHONY:	clean
 clean:	down
-		$(DC) -f $(DC_SRC) down -v --rmi all
+		$(DC) -f $(DC_SRC) -p $(TARGET) down -v --rmi all 
 
 .PHONY:	fclean
 fclean: clean
-		rm -rf $(DATA_PATH)
+		sudo rm -rf /home/seseo/data

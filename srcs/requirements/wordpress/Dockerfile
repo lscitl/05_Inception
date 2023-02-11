@@ -1,13 +1,15 @@
 # syntax=docker/dockerfile:1
 
-FROM alpine:3.17
+FROM alpine:3.17.2
 
-ARG WP_PATH=/var/www/html
+ARG WP_PATH \
+    PORT_WORDPRESS
 
 RUN apk add --update --no-cache \
     php81 \
     php81-fpm \
     php81-phar \
+    php81-json \
     php81-session \
     php81-iconv \
     php81-gd \
@@ -24,31 +26,33 @@ RUN apk add --update --no-cache \
     php81-ldap \
     php81-ctype \
     php81-dom \
+    php81-fileinfo \
+    php81-tokenizer \
     php81-simplexml \
     php81-redis \
     php81-ftp \
-    fcgi \
-    tar \
     curl \
     mariadb-client && \
-    mkdir -p /var/www/html
+    mkdir -p /var/www/html /var/adminer /scripts
 
-COPY tools/wp.sh /wp.sh
+COPY ./tools/wp.sh /scripts/wp.sh
+COPY ./tools/start.sh /scripts/start.sh
 
-RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar && \
-    chmod +x wp-cli.phar && \
-    mv wp-cli.phar /usr/bin/wp && \
+RUN sed -i "s/.*listen\s*=.*/listen = $PORT_WORDPRESS/g" /etc/php81/php-fpm.d/www.conf
+
+ADD https://www.adminer.org/latest-mysql.php /var/adminer/adminer.php
+ADD https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar /usr/bin/wp
+
+RUN chmod 755 /var/adminer/adminer.php && \
+    chmod 755 /usr/bin/wp && \
     wp core download --allow-root --path=$WP_PATH
 
-RUN adduser -D -S -G www-data www-data && \
-    chown -R www-data:www-data /var/www && \
-    chmod +x /wp.sh
+RUN adduser -D wpuser && \
+    chmod +x -R /scripts
 
-COPY ./conf/www.conf /etc/php81/php-fpm.d/www.conf
+EXPOSE $PORT_WORDPRESS
 
-EXPOSE 9000
-
-ENTRYPOINT [ "./wp.sh" ]
+ENTRYPOINT [ "/scripts/start.sh" ]
 
 # health check set
 HEALTHCHECK --interval=1s --timeout=1s --retries=30 --start-period=3s \
