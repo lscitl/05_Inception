@@ -40,7 +40,7 @@ RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli
     mv wp-cli.phar /usr/bin/wp && \
     wp core download --allow-root --path=$WP_PATH
 
-RUN adduser -u 82 -D -S -G www-data www-data && \
+RUN adduser -D -S -G www-data www-data && \
     chown -R www-data:www-data /var/www && \
     chmod +x /wp.sh
 
