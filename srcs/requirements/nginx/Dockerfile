@@ -2,14 +2,17 @@
 
 FROM alpine:3.17.2
 
-ARG SSL_PATH \
-	DOMAIN_NAME \
-	EMAIL
+ARG DOMAIN_NAME \
+	EMAIL \
+	PORT_ADMINER \
+	CONFIG_PATH=/etc/nginx/http.d/default.conf
 
-COPY ./conf/default.conf /etc/nginx/http.d/default.conf
+COPY ./conf/default.conf $CONFIG_PATH
 COPY ./tools/sign.sh /sign.sh
 
-RUN apk add --update --no-cache nginx openssl && \
+RUN sed -i "s|DOMAIN_NAME|$DOMAIN_NAME|g" $CONFIG_PATH && \
+	sed -i "s|PORT_ADMINER|$PORT_ADMINER|g" $CONFIG_PATH && \
+	apk add --update --no-cache nginx openssl && \
 	chmod +x /sign.sh && \
 	/sign.sh
 
