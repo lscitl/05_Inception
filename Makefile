@@ -6,7 +6,7 @@
 #    By: seseo <seseo@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/01/25 16:48:49 by seseo             #+#    #+#              #
-#    Updated: 2023/02/13 03:15:41 by seseo            ###   ########.fr        #
+#    Updated: 2023/02/13 03:16:57 by seseo            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -78,4 +78,3 @@ clean:	down
 .PHONY:	fclean
 fclean: clean
 		sudo rm -rf /home/seseo/data
-		# sudo rm -rf /home/ssduk/data
