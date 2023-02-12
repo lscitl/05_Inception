@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: seseo <seseo@student.42.fr>                +#+  +:+       +#+         #
+#    By: ssduk <ssduk@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/01/25 16:48:49 by seseo             #+#    #+#              #
-#    Updated: 2023/02/12 04:34:21 by seseo            ###   ########.fr        #
+#    Updated: 2023/02/12 17:50:42 by ssduk            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -72,8 +72,9 @@ re:		clean
 
 .PHONY:	clean
 clean:	down
-		$(DC) -f $(DC_SRC) -p $(TARGET) down -v --rmi all 
+		$(DC) -f $(DC_SRC) -p $(TARGET) down -v --rmi all
 
 .PHONY:	fclean
 fclean: clean
-		sudo rm -rf /home/seseo/data
+		# sudo rm -rf /home/seseo/data
+		sudo rm -rf /home/ssduk/data

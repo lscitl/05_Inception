@@ -40,10 +40,15 @@ COPY ./tools/start.sh /scripts/start.sh
 ADD https://www.adminer.org/latest-mysql.php /var/adminer/adminer.php
 ADD https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar /usr/bin/wp
 
-RUN sed -i "s/.*listen\s*=.*/listen = 9000/g" /etc/php81/php-fpm.d/www.conf && \
+RUN adduser -D wpuser -G www-data
+
+RUN sed -i "s|.*listen *=.*|listen = $PORT_WORDPRESS |g" /etc/php81/php-fpm.d/www.conf && \
     chmod 755 /var/adminer/adminer.php /usr/bin/wp && \
     chmod +x -R /scripts && \
-    adduser -D wpuser && \
+    mkdir -p /var/log/php81 && \
+	touch /var/log/php81/access.log && \
+	ln -sf /dev/stderr /var/log/php81/error.log && \
+    chown -R wpuser:www-data /var/log/php81 && \
     wp core download --allow-root --path=$WP_PATH
 
 EXPOSE $PORT_WORDPRESS

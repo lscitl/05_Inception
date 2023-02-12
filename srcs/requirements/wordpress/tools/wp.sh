@@ -9,21 +9,17 @@ if [ $? -ne 0 ] ; then
 					--dbname=$MARIADB_NAME \
 					--dbuser=$MARIADB_USER \
 					--dbpass=$MARIADB_USER_PW \
-					--dbhost=$MARIADB_CONTAINER_NAME
+					--dbhost=$MARIADB_CONTAINER_NAME --extra-php << EOF
+define( 'WP_CACHE', true );
+WP_CACHE_KEY_SALT
 
-	# set ftp config
-	wp config set "FS_METHOD" ftpext --path=$WP_PATH
-	wp config set "FTP_HOST" $FTP_HOST --path=$WP_PATH
-	wp config set "FTP_USER" $FTP_USER --path=$WP_PATH
-	wp config set "FTP_PASS" $FTP_PASS --path=$WP_PATH
-	wp config set "FTP_SSL" true --raw --path=$WP_PATH
+define( 'WP_REDIS_HOST', '$REDIS_HOST' );
+define( 'WP_REDIS_PASSWORD', '$REDIS_PW' );
+define( 'WP_REDIS_PORT', '$PORT_REDIS' );
 
-	# set redis config
-	wp config set "WP_REDIS_HOST" $REDIS_HOST --path=$WP_PATH
-	wp config set "WP_REDIS_PORT" $PORT_REDIS --raw --path=$WP_PATH
-	wp config set "WP_REDIS_TIMEOUT" 1 --raw --path=$WP_PATH
-	wp config set "WP_REDIS_READ_TIMEOUT" 1 --raw --path=$WP_PATH
-	wp config set "WP_REDIS_DATABASE" 0 --raw --path=$WP_PATH
+EOF
+	sed -i "/define( 'WP_CACHE_KEY_SALT.*/d" $WP_PATH/wp-config.php
+	sed -i "s|WP_CACHE_KEY_SALT|define( 'WP_CACHE_KEY_SALT', '$DOMAIN_NAME' );|g" $WP_PATH/wp-config.php
 
 	# set admin
 	wp core install --path=$WP_PATH \
@@ -38,7 +34,7 @@ if [ $? -ne 0 ] ; then
 					--path=$WP_PATH \
 					--role=author \
 					--user_pass=$WP_USER_PW
-	
+
 	wp plugin delete $(wp plugin list --status=inactive --field=name --path=$WP_PATH) --path=$WP_PATH
 fi
 

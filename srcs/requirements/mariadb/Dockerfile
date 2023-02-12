@@ -18,9 +18,8 @@ COPY conf/my.cnf /etc/my.cnf
 # make socket and volume mount directory.
 RUN mkdir -p /run/mysqld /var/lib/mysql && \
     chown -R mysql:mysql /run/mysqld /var/lib/mysql && \
-    chmod +x /setup.sh
-    
-RUN /setup.sh
+    chmod +x /setup.sh && \
+    /setup.sh
 
 EXPOSE 3306
 
