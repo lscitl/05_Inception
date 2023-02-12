@@ -31,24 +31,20 @@ RUN apk add --update --no-cache \
     php81-simplexml \
     php81-redis \
     php81-ftp \
-    curl \
     mariadb-client && \
     mkdir -p /var/www/html /var/adminer /scripts
 
 COPY ./tools/wp.sh /scripts/wp.sh
 COPY ./tools/start.sh /scripts/start.sh
 
-RUN sed -i "s/.*listen\s*=.*/listen = $PORT_WORDPRESS/g" /etc/php81/php-fpm.d/www.conf
-
 ADD https://www.adminer.org/latest-mysql.php /var/adminer/adminer.php
 ADD https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar /usr/bin/wp
 
-RUN chmod 755 /var/adminer/adminer.php && \
-    chmod 755 /usr/bin/wp && \
+RUN sed -i "s/.*listen\s*=.*/listen = 9000/g" /etc/php81/php-fpm.d/www.conf && \
+    chmod 755 /var/adminer/adminer.php /usr/bin/wp && \
+    chmod +x -R /scripts && \
+    adduser -D wpuser && \
     wp core download --allow-root --path=$WP_PATH
-
-RUN adduser -D wpuser && \
-    chmod +x -R /scripts
 
 EXPOSE $PORT_WORDPRESS
 
