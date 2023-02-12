@@ -37,6 +37,6 @@ LEVEL     = Info
 
 EOF
 
-sleep 10000
+# sleep 10000
 
 exec gitea
