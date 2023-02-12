@@ -10,14 +10,15 @@ fi
 
 # set user
 USER=seseo
+DOMAIN_NAME=${USER}.42.kr
 
 # host set
-if [ -n "$(cat /etc/hosts | grep $USER.42.kr)" ]; then
+if [ -n "$(cat /etc/hosts | grep $DOMAIN_NAME)" ]; then
   echo "host is already added"
 else
   cat << EOF | tee -a /etc/hosts
 #Inception host setting
-::1     $USER.42.kr
+::1     $DOMAIN_NAME
 EOF
 fi
 
