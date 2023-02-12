@@ -6,7 +6,10 @@ ARG MARIADB_ADMIN \
     MARIADB_ADMIN_PW \
     MARIADB_USER \
     MARIADB_USER_PW \
-    MARIADB_NAME
+    MARIADB_NAME \
+    GITEA_DB \
+    GITEA_USER \
+    GITEA_USER_PW
 
 RUN apk add --update --no-cache \
     mariadb \
