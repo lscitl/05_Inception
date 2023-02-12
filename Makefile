@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: ssduk <ssduk@student.42.fr>                +#+  +:+       +#+         #
+#    By: seseo <seseo@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/01/25 16:48:49 by seseo             #+#    #+#              #
-#    Updated: 2023/02/12 17:50:42 by ssduk            ###   ########.fr        #
+#    Updated: 2023/02/13 03:15:41 by seseo            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -34,7 +34,8 @@ CONTAINER_NGINX		:= nginx
 # bonus containers
 CONTAINER_VSFTPD	:= vsftpd
 CONTAINER_REDIS		:= redis
-CONTAINER_GIT		:= git
+CONTAINER_ADMINER	:= adminer
+CONTAINER_GITEA		:= gitea
 
 TARGET				:= inception
 
@@ -76,5 +77,5 @@ clean:	down
 
 .PHONY:	fclean
 fclean: clean
-		# sudo rm -rf /home/seseo/data
-		sudo rm -rf /home/ssduk/data
+		sudo rm -rf /home/seseo/data
+		# sudo rm -rf /home/ssduk/data
