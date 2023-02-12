@@ -1,5 +1,8 @@
 #!/bin/sh
 
+FTP_SSL_PATH=/etc/vsftpd/ssl
+FTP_DOMAIN_NAME=ftp.$DOMAIN_NAME
+
 mkdir -p $FTP_SSL_PATH
 chmod 700 $FTP_SSL_PATH
 
