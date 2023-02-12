@@ -1,7 +1,7 @@
 #!/bin/sh
 
-su -c /scripts/wp.sh wpuser
+/scripts/wp.sh
 
-chown -R wpuser:www-data /var/www/html
+chown -R www-data:www-data /var/www/html
 
 exec php-fpm81 -F
