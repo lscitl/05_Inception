@@ -4,14 +4,13 @@ FROM alpine:3.17.2
 
 RUN apk add --update --no-cache \
     php81 \
+    php81-curl \
     php81-fpm \
+    php81-iconv \
+    php81-mysqli \
     php81-phar \
     php81-session \
-    php81-iconv \
-    php81-curl \
-    php81-mysqli \
     php81-tokenizer \
-    php81-ftp \
     mariadb-client && \
     mkdir -p /var/www/html /scripts
 
@@ -21,7 +20,7 @@ COPY ./conf/www.conf /etc/php81/php-fpm.d/www.conf
 
 ADD https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar /usr/bin/wp
 
-RUN adduser -D -u 42 -S -G www-data www-data
+RUN adduser -D -u 82 -S -G www-data www-data
 
 RUN chmod 755 /usr/bin/wp && \
     chmod +x -R /scripts && \
