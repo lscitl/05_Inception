@@ -6,7 +6,7 @@
 #    By: seseo <seseo@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/01/25 16:48:49 by seseo             #+#    #+#              #
-#    Updated: 2023/02/13 03:16:57 by seseo            ###   ########.fr        #
+#    Updated: 2023/02/14 03:45:26 by seseo            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -36,24 +36,36 @@ CONTAINER_VSFTPD	:= vsftpd
 CONTAINER_REDIS		:= redis
 CONTAINER_ADMINER	:= adminer
 CONTAINER_GITEA		:= gitea
+CONTAINER_STATIC	:= static
 
 TARGET				:= inception
 
 .PHONY:	all
 all:	up
 
-.PHONY: build
-build:
-		mkdir -p $(DATA_PATH)/wp $(DATA_PATH)/wpdb
-		$(DC) -f $(DC_SRC) -p $(TARGET) build
+.PHONY: mkdir
+mkdir:
+		mkdir -p $(DATA_PATH)/wp $(DATA_PATH)/wpdb $(DATA_PATH)/git
 
 .PHONY:	up
-up:		build
+up:		mkdir
 		$(DC) -f $(DC_SRC) -p $(TARGET) up
 
 .PHONY:	down
 down:
 		$(DC) -f $(DC_SRC) -p $(TARGET) down
+
+.PHONY:	re
+re:		clean
+		make up
+
+.PHONY:	clean
+clean:
+		$(DC) -f $(DC_SRC) -p $(TARGET) down -v --rmi all
+
+.PHONY:	fclean
+fclean: clean
+		sudo rm -rf $(HOME)/data
 
 .PHONY:	img_ls
 img_ls:
@@ -66,15 +78,3 @@ vol_ls:
 .PHONY:	net_ls
 net_ls:
 		$(DNL)
-
-.PHONY:	re
-re:		clean
-		make up
-
-.PHONY:	clean
-clean:	down
-		$(DC) -f $(DC_SRC) -p $(TARGET) down -v --rmi all
-
-.PHONY:	fclean
-fclean: clean
-		sudo rm -rf /home/seseo/data
