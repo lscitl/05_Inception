@@ -4,7 +4,7 @@ FROM alpine:3.17.2
 
 ARG PORT_ADMINER
 
-RUN adduser -D -u 42 -S -H -G www-data www-data
+RUN adduser -D -u 82 -S -H -G www-data adminer
 
 RUN apk add --update --no-cache \
     php81 \
@@ -18,11 +18,11 @@ RUN apk add --update --no-cache \
 COPY ./conf/www.conf /etc/php81/php-fpm.d/www.conf
 
 RUN sed -i "s|.*listen *=.*|listen = $PORT_ADMINER |g" /etc/php81/php-fpm.d/www.conf && \
-	mkdir -p /var/www/html
+    mkdir -p /var/www/html
 
 ADD https://github.com/vrana/adminer/releases/download/v4.8.1/adminer-4.8.1.php /var/www/html/index.php
 
-RUN chown -R www-data:www-data /var/www/html
+RUN chown -R adminer:www-data /var/www/html
 
 EXPOSE 4433
 
