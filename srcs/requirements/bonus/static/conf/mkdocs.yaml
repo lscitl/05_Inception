@@ -1,0 +1,5 @@
+site_name: SpaceX Webserv
+site_url: http://localhost
+nav:
+  - Home: index.md
+theme: readthedocs
