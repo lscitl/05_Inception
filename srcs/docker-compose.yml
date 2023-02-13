@@ -122,6 +122,7 @@ services:
       args:
         - DOMAIN_NAME
         - EMAIL
+        - FTP_USER
         - PORT_FTP_MIN
         - PORT_FTP_MAX
 
@@ -174,11 +175,20 @@ services:
     build:
       context: ./requirements/bonus/gitea
       dockerfile: ./Dockerfile
+      args:
+        - MARIADB_HOST
+        - GITEA_DB
+        - GITEA_USER
+        - GITEA_USER_PW
+        - EMAIL
 
     restart: always
 
     ports:
-      - "4242:4242"
+      - "3000:3000"
+
+    volumes:
+      - v_git:/var/lib/gitea/git
 
     networks:
       nw-db: {}
@@ -189,6 +199,19 @@ services:
     depends_on:
       mariadb:
         condition: service_healthy
+
+
+  static:
+    container_name: static
+
+    build:
+      context: ./requirements/bonus/static
+      dockerfile: ./Dockerfile
+
+    restart: always
+
+    ports:
+      - "8000:8000"
 
 
 networks:
@@ -215,3 +238,10 @@ volumes:
       type: none
       o: bind
       device: $DATA_PATH/wp
+
+  v_git:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: $DATA_PATH/git
