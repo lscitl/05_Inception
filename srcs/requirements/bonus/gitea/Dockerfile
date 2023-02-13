@@ -2,12 +2,23 @@
 
 FROM alpine:3.17.2
 
-RUN apk add --update --no-cache gitea 
+ARG MARIADB_HOST \
+    GITEA_DB \
+    GITEA_USER \
+    GITEA_USER_PW \
+    EMAIL
 
-COPY ./tools/start.sh /start.sh
+RUN apk add --update --no-cache gitea curl && \
+    mkdir -p /scripts
 
-RUN chmod +x /start.sh
+COPY ./tools/set_config.sh /scripts/set_config.sh
+COPY ./tools/start.sh /scripts/start.sh
 
-EXPOSE 4242
+RUN chmod +x -R /scripts && \
+    /scripts/set_config.sh
 
-ENTRYPOINT su gitea -c /start.sh
+EXPOSE 3000
+
+STOPSIGNAL SIGKILL
+
+ENTRYPOINT su gitea -c /scripts/start.sh
