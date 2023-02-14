@@ -6,7 +6,7 @@
 #    By: seseo <seseo@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/01/25 16:48:49 by seseo             #+#    #+#              #
-#    Updated: 2023/02/14 03:45:26 by seseo            ###   ########.fr        #
+#    Updated: 2023/02/14 17:17:02 by seseo            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -49,7 +49,7 @@ mkdir:
 
 .PHONY:	up
 up:		mkdir
-		$(DC) -f $(DC_SRC) -p $(TARGET) up
+		$(DC) -f $(DC_SRC) -p $(TARGET) up -d
 
 .PHONY:	down
 down:
