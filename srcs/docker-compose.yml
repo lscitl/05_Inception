@@ -3,7 +3,6 @@ version: "3.8"
 services:
   mariadb:
     container_name: mariadb
-
     build:
       context: ./requirements/mariadb
       dockerfile: ./Dockerfile
@@ -16,32 +15,24 @@ services:
         - GITEA_DB
         - GITEA_USER
         - GITEA_USER_PW
-
     restart: always
-
     volumes:
       - v_wpdb:/var/lib/mysql
-
     networks:
       nw-db:
         aliases:
           - $MARIADB_HOST
-
     env_file:
       - .env
 
   wordpress:
     container_name: wordpress
-
     build:
       context: ./requirements/wordpress
       dockerfile: ./Dockerfile
-
     restart: always
-
     volumes:
       - v_wp:/var/www/html
-
     networks:
       nw-db: {}
       nw-redis:
@@ -51,20 +42,16 @@ services:
       nw-nginx:
         aliases:
           - $WP_HOST
-
     env_file:
       - .env
-
     depends_on:
       mariadb:
         condition: service_healthy
       redis:
         condition: service_healthy
 
-
   nginx:
     container_name: nginx
-
     build:
       context: ./requirements/nginx
       dockerfile: ./Dockerfile
@@ -72,29 +59,21 @@ services:
         - DOMAIN_NAME
         - EMAIL
         - PORT_ADMINER
-
     restart: always
-
     ports:
       - "443:443"
-
     volumes:
       - v_wp:/var/www/html
-
     networks:
       nw-nginx: {}
-
     env_file:
       - .env
-
     depends_on:
       wordpress:
         condition: service_healthy
 
-
   redis:
     container_name: redis
-
     build:
       context: ./requirements/bonus/redis
       dockerfile: ./Dockerfile
@@ -102,20 +81,16 @@ services:
         - REDIS_HOST
         - REDIS_PW
         - PORT_REDIS
-
     restart: always
-
     networks:
       nw-redis:
         aliases:
           - $REDIS_HOST
-
     env_file:
       - .env
 
   vsftpd:
     container_name: vsftpd
-
     build:
       context: ./requirements/bonus/vsftpd
       dockerfile: ./Dockerfile
@@ -125,53 +100,41 @@ services:
         - FTP_USER
         - PORT_FTP_MIN
         - PORT_FTP_MAX
-
     restart: always
-
     ports:
       - "20:20"
       - "21:21"
       - "$PORT_FTP_MIN-$PORT_FTP_MAX:$PORT_FTP_MIN-$PORT_FTP_MAX"
-
     volumes:
       - v_wp:/var/ftp
-
     networks:
       nw-ftp:
         aliases:
           - $FTP_HOST
-
     env_file:
       - .env
-
     depends_on:
       wordpress:
         condition: service_healthy
 
   adminer:
     container_name: adminer
-
     build:
       context: ./requirements/bonus/adminer
       dockerfile: ./Dockerfile
       args:
         - PORT_ADMINER
-
     restart: always
-
     networks:
       nw-nginx:
         aliases:
           - $ADMINER_HOST
       nw-db: {}
-
     env_file:
       - .env
 
-
   gitea:
     container_name: gitea
-
     build:
       context: ./requirements/bonus/gitea
       dockerfile: ./Dockerfile
@@ -181,35 +144,25 @@ services:
         - GITEA_USER
         - GITEA_USER_PW
         - EMAIL
-
     restart: always
-
     ports:
       - "3000:3000"
-
     volumes:
       - v_git:/var/lib/gitea/git
-
     networks:
       nw-db: {}
-
     env_file:
       - .env
-
     depends_on:
       mariadb:
         condition: service_healthy
 
-
   static:
     container_name: static
-
     build:
       context: ./requirements/bonus/static
       dockerfile: ./Dockerfile
-
     restart: always
-
     ports:
       - "8000:8000"
 
@@ -231,14 +184,12 @@ volumes:
       type: none
       o: bind
       device: $DATA_PATH/wpdb
-
   v_wp:
     driver: local
     driver_opts:
       type: none
       o: bind
       device: $DATA_PATH/wp
-
   v_git:
     driver: local
     driver_opts:

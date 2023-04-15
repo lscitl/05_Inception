@@ -6,7 +6,7 @@
 #    By: seseo <seseo@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/01/25 16:48:49 by seseo             #+#    #+#              #
-#    Updated: 2023/02/14 17:17:02 by seseo            ###   ########.fr        #
+#    Updated: 2023/04/15 15:22:21 by seseo            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -43,13 +43,10 @@ TARGET				:= inception
 .PHONY:	all
 all:	up
 
-.PHONY: mkdir
-mkdir:
-		mkdir -p $(DATA_PATH)/wp $(DATA_PATH)/wpdb $(DATA_PATH)/git
-
 .PHONY:	up
-up:		mkdir
-		$(DC) -f $(DC_SRC) -p $(TARGET) up -d
+up:
+		mkdir -p $(DATA_PATH)/wp $(DATA_PATH)/wpdb $(DATA_PATH)/git
+		$(DC) -f $(DC_SRC) -p $(TARGET) up --build -d
 
 .PHONY:	down
 down:

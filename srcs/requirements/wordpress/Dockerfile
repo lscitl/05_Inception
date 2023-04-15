@@ -14,7 +14,6 @@ RUN apk add --update --no-cache \
     mariadb-client && \
     mkdir -p /var/www/html /scripts
 
-COPY ./tools/wp.sh /scripts/wp.sh
 COPY ./tools/start.sh /scripts/start.sh
 COPY ./conf/www.conf /etc/php81/php-fpm.d/www.conf
 
